@@ -1,10 +1,5 @@
 pipeline {
     agent any
-
-    tools {
-        maven 'Maven'   // Make sure Maven is configured in Global Tool Configuration
-    }
-
     stages {
 
         stage('Checkout Code') {
