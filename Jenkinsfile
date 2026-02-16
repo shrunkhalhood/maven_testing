@@ -1,43 +1,22 @@
 pipeline {
     agent any
+
     stages {
-
-        stage('Checkout Code') {
+        stage('Build & Test') {
+            agent {
+                docker {
+                    image 'maven:3.9.9-eclipse-temurin-17'
+                }
+            }
             steps {
-                echo 'Pulling code from GitHub...'
-                checkout scm
+                sh 'mvn clean verify'
             }
         }
 
-        stage('Build') {
+        stage('Archive Artifact') {
             steps {
-                echo 'Building the project...'
-                sh 'mvn clean compile'
+                archiveArtifacts artifacts: '**/target/*.jar', fingerprint: true
             }
-        }
-
-        stage('Test') {
-            steps {
-                echo 'Running tests...'
-                sh 'mvn test'
-            }
-        }
-
-        stage('Package') {
-            steps {
-                echo 'Creating JAR file...'
-                sh 'mvn package'
-            }
-        }
-    }
-
-    post {
-        success {
-            echo 'Build Successful 🎉'
-        }
-        failure {
-            echo 'Build Failed ❌'
         }
     }
 }
-
