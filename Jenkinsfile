@@ -1,22 +1,14 @@
 pipeline {
     agent any
 
-    stages {
-        stage('Build & Test') {
-            agent {
-                docker {
-                    image 'maven:3.9.9-eclipse-temurin-17'
-                    args '-u root -v /var/jenkins_home/.m2:/root/.m2'
-                }
-            }
-            steps {
-                sh 'mvn clean verify'
-            }
-        }
+    tools {
+        maven 'Maven-3'
+    }
 
-        stage('Archive Artifact') {
+    stages {
+        stage('Build') {
             steps {
-                archiveArtifacts artifacts: '**/target/*.jar', fingerprint: true
+                sh 'mvn clean package'
             }
         }
     }
